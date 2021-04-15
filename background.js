@@ -2,8 +2,6 @@ function get_data() {
     return new Promise(ok => chrome.storage.sync.get(['apikey', 'voice_name'], ok))
 }
 
-// '0305c419-dec1-4ff8-a310-54bad9087fa0'
-
 chrome.contextMenus.create({
     id: 'wavenet-reader',
     contexts: ['selection'],
