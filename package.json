@@ -1,0 +1,29 @@
+{
+  "name": "wave_reader",
+  "version": "0.1.0",
+  "description": "wavenet voice chrome page reader",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hugodecasta/wave_reader.git"
+  },
+  "keywords": [
+    "Wavenet",
+    "voice",
+    "tts",
+    "text",
+    "to",
+    "speach",
+    "chrome",
+    "extension"
+  ],
+  "author": "Hugo Castaneda",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hugodecasta/wave_reader/issues"
+  },
+  "homepage": "https://github.com/hugodecasta/wave_reader#readme"
+}

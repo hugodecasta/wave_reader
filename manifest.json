@@ -1,0 +1,23 @@
+{
+    "name": "Wavenet reader",
+    "description": "Wavenet voice chrome page reader",
+    "version": "1.0",
+    "manifest_version": 2,
+    "permissions": [
+        "activeTab",
+        "contextMenus",
+        "storage"
+    ],
+    "background": {
+        "scripts": [
+            "wavenet-server.js",
+            "background.js"
+        ]
+    },
+    "icons": {
+        "256": "/images/icon.png"
+    },
+    "browser_action": {
+        "default_popup": "popup.html"
+    }
+}
