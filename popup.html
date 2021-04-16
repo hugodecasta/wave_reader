@@ -9,8 +9,16 @@
     <h4>API KEY</h4>
     <input id='apikey' placeholder="wavenet server api key" />
     <p id='infos'></p>
-    <h4>VOICE</h4>
-    <select id='voices'></select>
+    <table>
+        <thead>
+            <tr id='voice_titles'>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id='voice_selects'>
+            </tr>
+        </tbody>
+    </table>
 
     <script src='wavenet-server.js'></script>
     <script src='popup.js' type="module"></script>

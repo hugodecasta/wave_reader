@@ -5,15 +5,38 @@ async function load_voices() {
         const client = new WAVENET_CLIENT(apikey_input.value)
         const voices = await client.get_voices()
         if ('error' in voices) throw 'cannot retrieve voices'
-        voices_select.innerHTML = ''
+
         infos_p.innerHTML = ''
-        Object.keys(voices).forEach(voice_name => {
-            let voice_option = document.createElement('option')
-            voice_option.innerHTML = voice_name
-            voice_option.value = voice_name
-            voices_select.appendChild(voice_option)
+        voice_titles_tr.innerHTML = ''
+        voice_selects_tr.innerHTML = ''
+
+        const langs = Object.keys(Object.values(voices)[0])
+        const lang_select = {}
+        langs.forEach(lang => {
+            let title = document.createElement('th')
+            title.innerHTML = lang + ' voices'
+            voice_titles_tr.appendChild(title)
+            let td = document.createElement('td')
+            let select = document.createElement('select')
+            td.appendChild(select)
+            voice_selects_tr.appendChild(td)
+            lang_select[lang] = select
         })
-        voices_select.value = voice_name
+
+        Object.keys(voices).forEach(voice_name => {
+            langs.forEach(lang => {
+                let voice_option = document.createElement('option')
+                voice_option.innerHTML = 'voice - ' + voice_name
+                voice_option.value = voice_name
+                lang_select[lang].appendChild(voice_option)
+            })
+        })
+        langs.forEach(lang => lang_select[lang].value = voices_name[lang])
+        langs.forEach(lang =>
+            lang_select[lang].onchange = () => {
+                voices_name[lang] = lang_select[lang].value
+                save_data(apikey, voices_name)
+            })
         return true
     }
     catch (e) {
@@ -23,33 +46,31 @@ async function load_voices() {
     return false
 }
 
-function save_data(apikey, voice_name) {
-    console.log('saving', { apikey, voice_name })
-    chrome.storage.sync.set({ apikey, voice_name });
+function save_data(apikey, voices_name) {
+    console.log('saving', { apikey, voices_name })
+    chrome.storage.sync.set({ apikey, voices_name });
 }
 
 function get_data() {
-    return new Promise(ok => chrome.storage.sync.get(['apikey', 'voice_name'], ok))
+    return new Promise(ok => chrome.storage.sync.get(['apikey', 'voices_name'], ok))
 }
 
 // ------------------------------------- INIT
 
-let { apikey, voice_name } = await get_data()
+let { apikey, voices_name } = await get_data()
+voices_name ||= {}
+console.log(voices_name)
 
 const apikey_input = document.getElementById('apikey')
-const voices_select = document.getElementById('voices')
 const infos_p = document.getElementById('infos')
 apikey_input.value = apikey
-voices_select.value = voice_name
+
+const voice_titles_tr = document.getElementById('voice_titles')
+const voice_selects_tr = document.getElementById('voice_selects')
 
 await load_voices()
 
 // ------------------------------------- EVENTS
-
-voices_select.onchange = () => {
-    voice_name = voices_select.value
-    save_data(apikey, voice_name)
-}
 
 apikey_input.onchange = async () => {
     apikey = apikey_input.value

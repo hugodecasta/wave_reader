@@ -12,6 +12,7 @@ class WAVENET_CLIENT {
             options.body = JSON.stringify(data)
         }
         const url = `${this.host}/api/${endpoint}`
+        console.log(url, options)
         return await (await fetch(url, options)).json()
     }
 
@@ -19,8 +20,8 @@ class WAVENET_CLIENT {
         return this.__make_call('voices')
     }
 
-    async tts(text, voice_name) {
-        const file_name = await this.__make_call('tts', { text, voice_name })
+    async tts(text, voice_name, lang = 'fr-FR') {
+        const file_name = await this.__make_call('tts', { text, voice_name, lang })
         return `${this.host}/sounds/${file_name}`
     }
 }
