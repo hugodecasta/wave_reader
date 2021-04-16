@@ -35,7 +35,7 @@ async function load_voices() {
         langs.forEach(lang =>
             lang_select[lang].onchange = () => {
                 voices_name[lang] = lang_select[lang].value
-                save_data(apikey, voices_name)
+                save_data()
             })
         return true
     }
@@ -46,24 +46,26 @@ async function load_voices() {
     return false
 }
 
-function save_data(apikey, voices_name) {
-    console.log('saving', { apikey, voices_name })
-    chrome.storage.sync.set({ apikey, voices_name });
+function save_data() {
+    chrome.storage.sync.set({ apikey, voices_name, volume });
 }
 
 function get_data() {
-    return new Promise(ok => chrome.storage.sync.get(['apikey', 'voices_name'], ok))
+    return new Promise(ok => chrome.storage.sync.get(['apikey', 'voices_name', 'volume'], ok))
 }
 
 // ------------------------------------- INIT
 
-let { apikey, voices_name } = await get_data()
+let { apikey, voices_name, volume } = await get_data()
 voices_name ||= {}
+volume ||= 1
 console.log(voices_name)
 
 const apikey_input = document.getElementById('apikey')
 const infos_p = document.getElementById('infos')
+const volume_slider = document.getElementById('volume')
 apikey_input.value = apikey
+volume_slider.value = volume * 100
 
 const voice_titles_tr = document.getElementById('voice_titles')
 const voice_selects_tr = document.getElementById('voice_selects')
@@ -74,6 +76,10 @@ await load_voices()
 
 apikey_input.onchange = async () => {
     apikey = apikey_input.value
-    if (await load_voices())
-        save_data(apikey, voice_name)
+    if (await load_voices()) save_data()
+}
+
+volume_slider.onchange = async () => {
+    volume = volume_slider.value / 100
+    save_data()
 }
