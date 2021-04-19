@@ -1,5 +1,5 @@
 function get_data() {
-    return new Promise(ok => chrome.storage.sync.get(['apikey', 'voices_name', 'volume'], ok))
+    return new Promise(ok => chrome.storage.sync.get(['apikey', 'voices_name', 'volume', 'translate_to'], ok))
 }
 
 function detect_language(text) {
@@ -16,15 +16,15 @@ chrome.contextMenus.create({
     contexts: ['selection'],
     title: 'Read with wavenet',
     onclick: async (info) => {
-        const { apikey, voices_name, volume } = await get_data()
+        const { apikey, voices_name, volume, translate_to } = await get_data()
         const client = new WAVENET_CLIENT(apikey);
         const { selectionText } = info
         const detected_language = await detect_language(selectionText)
-        const lang = lang_map[detected_language] ?? 'en-US'
+        const lang = translate_to ?? lang_map[detected_language] ?? 'en-US'
         const voice_name = voices_name[lang]
-        const src = await client.tts(selectionText, voice_name, lang)
+        const force_translate = translate_to && translate_to != lang_map[detected_language]
+        const src = await client.tts(selectionText, voice_name, lang, force_translate)
         const audio = new Audio(src)
-        console.log(volume)
         audio.volume = volume
         audio.play()
     }
